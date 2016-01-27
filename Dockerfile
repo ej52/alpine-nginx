@@ -12,7 +12,7 @@ RUN \
   tar xzf nginx-${NGINX_VERSION}.tar.gz && \
   cd /tmp/nginx-${NGINX_VERSION} && \
   ./configure \
-    --prefix=/etc/nginx \
+    --prefix=/usr/share/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
     --error-log-path=/var/log/nginx/error.log \
