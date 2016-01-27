@@ -6,7 +6,7 @@ ENV NGINX_VERSION=1.9.9
 RUN \
   build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" && \
   runtime_pkgs="ca-certificates openssl pcre zlib" && \
-  apk --update add ${build_pkgs} ${runtime_pkgs} && \
+  apk --update add bash ${build_pkgs} ${runtime_pkgs} && \
   cd /tmp && \
   wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
   tar xzf nginx-${NGINX_VERSION}.tar.gz && \
