@@ -1,4 +1,4 @@
-FROM alpine:3.3
+FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
 ENV NGINX_VERSION=1.9.9
@@ -6,7 +6,7 @@ ENV NGINX_VERSION=1.9.9
 RUN \
   build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" && \
   runtime_pkgs="ca-certificates openssl pcre zlib" && \
-  apk --update add ${build_pkgs} ${runtime_pkgs} && \
+  apk --no-cache add ${build_pkgs} ${runtime_pkgs} && \
   cd /tmp && \
   wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
   tar xzf nginx-${NGINX_VERSION}.tar.gz && \
@@ -54,12 +54,11 @@ RUN \
   apk del ${build_pkgs} && \
   mkdir /var/cache/nginx && \
   rm /etc/nginx/*.default && \
-  rm -rf /var/cache/apk/*
+  rm -rf /var/cache/apk/* && \
+  rm -rf /var/www/*
 
-COPY nginx.conf /etc/nginx/
-ADD  conf.d /etc/nginx/conf.d
+ADD root /
 
 VOLUME ["/var/cache/nginx"]
-EXPOSE 80 443
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+EXPOSE 80 443
