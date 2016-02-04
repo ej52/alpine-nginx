@@ -24,8 +24,8 @@ RUN \
     --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
     --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
     --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-    --user=nginx \
-    --group=nginx \
+    --user=www-data \
+    --group=www-data \
     --with-http_ssl_module \
     --with-http_realip_module \
     --with-http_addition_module \
@@ -49,7 +49,7 @@ RUN \
     --with-http_v2_module && \
   make && \
   make install && \
-  adduser -D nginx && \
+  adduser -D www-data && \
   rm -rf /tmp/* && \
   apk del ${build_pkgs} && \
   mkdir /var/cache/nginx && \
