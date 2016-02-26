@@ -4,14 +4,19 @@ MAINTAINER Elton Renda "https://github.com/ej52"
 ENV NGINX_VERSION=1.9.9
 
 RUN \
-  build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" && \
-  runtime_pkgs="ca-certificates openssl pcre zlib" && \
-  apk --no-cache add ${build_pkgs} ${runtime_pkgs} && \
-  cd /tmp && \
-  wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
-  tar xzf nginx-${NGINX_VERSION}.tar.gz && \
-  cd /tmp/nginx-${NGINX_VERSION} && \
-  ./configure \
+  # Install build and runtime packages
+  build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" \ 
+  && runtime_pkgs="ca-certificates openssl pcre zlib" \
+  && apk --no-cache add ${build_pkgs} ${runtime_pkgs} \
+  
+   # download unpack nginx-src
+  && mkdir /tmp/nginx && cd /tmp/nginx \
+  && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+  && tar xzf nginx-${NGINX_VERSION}.tar.gz \
+  && cd nginx-${NGINX_VERSION} \
+  
+  #compile
+  && ./configure \
     --prefix=/usr/share/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -46,16 +51,27 @@ RUN \
     --with-threads \
     --with-stream \
     --with-stream_ssl_module \
-    --with-http_v2_module && \
-  make && \
-  make install && \
-  adduser -D www-data && \
-  rm -rf /tmp/* && \
-  apk del ${build_pkgs} && \
-  mkdir /var/cache/nginx && \
-  rm /etc/nginx/*.default && \
-  rm -rf /var/cache/apk/* && \
-  rm -rf /var/www/*
+    --with-http_v2_module \
+  && make \
+  && make install \
+  && make clean \
+  
+  # strip debug symbols from the binary (GREATLY reduces binary size)
+  && strip -s /usr/sbin/nginx \
+  
+  # add www-data user and create cache dir
+  && adduser -D www-data \
+  && mkdir /var/cache/nginx \
+  
+  # remove NGINX dev dependencies
+  && apk del ${build_pkgs} \
+  
+  # other clean up
+  && cd / \
+  && rm /etc/nginx/*.default \
+  && rm -rf /var/cache/apk/* \
+  && rm -rf /tmp/* \
+  && rm -rf /var/www/*
 
 ADD root /
 
