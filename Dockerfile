@@ -1,7 +1,7 @@
 FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
-ENV NGINX_VERSION=1.9.9
+ENV NGINX_VERSION=1.10.1
 
 RUN \
   # Install build and runtime packages
