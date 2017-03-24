@@ -1,7 +1,7 @@
 FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
-ENV NGINX_VERSION=1.10.1
+ENV NGINX_VERSION=1.11.10
 
 RUN \
   # Install build and runtime packages
@@ -17,7 +17,7 @@ RUN \
   
   #compile
   && ./configure \
-    --prefix=/usr/share/nginx \
+    --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
     --error-log-path=/var/log/nginx/error.log \
@@ -44,13 +44,16 @@ RUN \
     --with-http_secure_link_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \
-    --with-mail \
-    --with-mail_ssl_module \
-    --with-file-aio \
-    --with-ipv6 \
     --with-threads \
     --with-stream \
     --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-stream_realip_module \
+    --with-http_slice_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-compat \
+    --with-file-aio \
     --with-http_v2_module \
   && make \
   && make install \
@@ -73,7 +76,7 @@ RUN \
   && rm -rf /tmp/* \
   && rm -rf /var/www/*
 
-ADD root /
+COPY root /
 
 VOLUME ["/var/cache/nginx"]
 
