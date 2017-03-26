@@ -2,7 +2,7 @@
 FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
-ENV NGINX_VERSION=1.10.1
+ENV NGINX_VERSION=1.11.10
 
 VOLUME ["/var/cache/nginx"]
 
