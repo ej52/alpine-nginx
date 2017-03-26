@@ -1,22 +1,29 @@
+
 FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
-ENV NGINX_VERSION=1.11.10
+ENV NGINX_VERSION=1.10.1
+
+VOLUME ["/var/cache/nginx"]
+
+# Install runtime dependancies
+RUN \
+    apk add --no-cache --virtual .run-deps \
+    ca-certificates openssl pcre zlib
 
 RUN \
-  # Install build and runtime packages
-  build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev" \ 
-  && runtime_pkgs="ca-certificates openssl pcre zlib" \
-  && apk --no-cache add ${build_pkgs} ${runtime_pkgs} \
-  
-   # download unpack nginx-src
-  && mkdir /tmp/nginx && cd /tmp/nginx \
-  && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
-  && tar xzf nginx-${NGINX_VERSION}.tar.gz \
-  && cd nginx-${NGINX_VERSION} \
-  
-  #compile
-  && ./configure \
+    # Install build and runtime packages
+    apk add --no-cache --virtual .build-deps \
+    build-base linux-headers openssl-dev pcre-dev wget zlib-dev \
+
+    # download unpack nginx-src
+    && mkdir /tmp/nginx && cd /tmp/nginx \
+    && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+    && tar xzf nginx-${NGINX_VERSION}.tar.gz \
+    && cd nginx-${NGINX_VERSION} \
+
+    #compile
+    && ./configure \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -55,29 +62,26 @@ RUN \
     --with-compat \
     --with-file-aio \
     --with-http_v2_module \
-  && make \
-  && make install \
-  && make clean \
-  
-  # strip debug symbols from the binary (GREATLY reduces binary size)
-  && strip -s /usr/sbin/nginx \
-  
-  # add www-data user and create cache dir
-  && adduser -D www-data \
-  && mkdir /var/cache/nginx \
-  
-  # remove NGINX dev dependencies
-  && apk del ${build_pkgs} \
-  
-  # other clean up
-  && cd / \
-  && rm /etc/nginx/*.default \
-  && rm -rf /var/cache/apk/* \
-  && rm -rf /tmp/* \
-  && rm -rf /var/www/*
+    && make \
+    && make install \
+    && make clean \
+
+    # strip debug symbols from the binary (GREATLY reduces binary size)
+    && strip -s /usr/sbin/nginx \
+
+    # add www-data user and create cache dir
+    && adduser -D www-data \
+
+    # remove NGINX dev dependencies
+    && apk del .build-deps \
+
+    # other clean up
+    && cd / \
+    && rm /etc/nginx/*.default \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/www/*
 
 COPY root /
-
-VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80 443
