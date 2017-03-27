@@ -1,5 +1,5 @@
 
-FROM ej52/alpine-base:3.4
+FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
 ENV NGINX_VERSION=1.11.10
