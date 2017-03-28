@@ -2,8 +2,6 @@
 FROM ej52/alpine-base:latest
 MAINTAINER Elton Renda "https://github.com/ej52"
 
-ENV NGINX_VERSION=1.11.10
-
 VOLUME ["/var/cache/nginx"]
 
 # Install runtime dependancies
@@ -18,9 +16,9 @@ RUN \
 
     # download unpack nginx-src
     && mkdir /tmp/nginx && cd /tmp/nginx \
-    && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
-    && tar xzf nginx-${NGINX_VERSION}.tar.gz \
-    && cd nginx-${NGINX_VERSION} \
+    && wget http://nginx.org/download/nginx-1.11.10.tar.gz \
+    && tar xzf nginx-1.11.10.tar.gz \
+    && cd nginx-1.11.10 \
 
     #compile
     && ./configure \
