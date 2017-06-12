@@ -1,6 +1,6 @@
 
-FROM ej52/alpine-base:latest
-MAINTAINER Elton Renda "https://github.com/ej52"
+FROM ej52/alpine-base:3.4
+LABEL maintainer Elton Renda "elton@ebrdev.co.za"
 
 VOLUME ["/var/cache/nginx"]
 
