@@ -16,9 +16,9 @@ RUN \
 
     # download unpack nginx-src
     && mkdir /tmp/nginx && cd /tmp/nginx \
-    && wget http://nginx.org/download/nginx-1.11.10.tar.gz \
-    && tar xzf nginx-1.11.10.tar.gz \
-    && cd nginx-1.11.10 \
+    && wget http://nginx.org/download/nginx-1.12.0.tar.gz \
+    && tar xzf nginx-1.12.0.tar.gz \
+    && cd nginx-1.12.0 \
 
     #compile
     && ./configure \
